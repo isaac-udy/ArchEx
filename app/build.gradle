@@ -1,17 +1,16 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 26
+
     defaultConfig {
         applicationId "com.isaacudy.archex.example"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode library_version_code
+        versionName library_version_name
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -24,8 +23,8 @@ android {
 
 dependencies {
     implementation project(path: ':archex')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation "android.arch.lifecycle:extensions:1.1.0"
+    implementation "com.android.support:appcompat-v7:$android_support_version"
+    implementation "android.arch.lifecycle:extensions:$architecture_components_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
     testImplementation 'junit:junit:4.12'
