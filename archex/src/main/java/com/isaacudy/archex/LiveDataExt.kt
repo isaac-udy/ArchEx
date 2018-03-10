@@ -16,7 +16,7 @@ interface LiveObject<out T : Any> {
     fun hasActiveObservers(): Boolean
 }
 
-sealed class Live<T : Any>(initialState: T) : LiveObject<T> {
+open class Live<T : Any>(initialState: T) : LiveObject<T> {
     internal val backing = MutableLiveData<T>().apply { value = initialState }
 
     open val state get() = backing.value!!
@@ -44,6 +44,15 @@ sealed class Live<T : Any>(initialState: T) : LiveObject<T> {
     override fun hasObservers(): Boolean = backing.hasObservers()
 
     override fun hasActiveObservers(): Boolean = backing.hasActiveObservers()
+
+    fun <R : Any> map(function: (T) -> R) : Live<R> {
+        val initial = function(backing.value!!)
+        val live = Live(initial)
+        observeForever {
+            live.backing.value = function(it)
+        }
+        return live
+    }
 
     private fun createObserver(observer: LiveObserver<T>): Observer<T> {
         return Observer { t ->
@@ -101,6 +110,15 @@ open class LiveEvent<T : Any> : LiveObject<T> {
 
     override fun hasActiveObservers(): Boolean = backing.hasActiveObservers()
 
+    fun <R : Any> map(function: (T) -> R) : LiveEvent<R> {
+        val live = LiveEvent<R>()
+        observeForever {
+            live.backing.value = function(it)
+            backing.value = null
+        }
+        return live
+    }
+
     private fun createObserver(observer: LiveObserver<T>): Observer<T> {
         return Observer { t ->
             if (t == null) return@Observer
@@ -124,5 +142,7 @@ class MutableLiveEvent<T :Any> : LiveEvent<T>() {
         }
     }
 }
+
+private class Maybe<T>(val value: T?)
 
 typealias LiveObserver<T> = (T) -> Unit
