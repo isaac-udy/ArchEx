@@ -3,6 +3,7 @@ package com.isaacudy.archex.example
 import android.arch.lifecycle.ViewModelProviders
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -17,8 +18,16 @@ class MainActivity : AppCompatActivity() {
             message.text = it.message
         }
 
+        viewModel.toast.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        }
+
         nextButton.setOnClickListener {
             viewModel.nextMessage()
+        }
+
+        peekButton.setOnClickListener {
+            viewModel.peekNextMessage()
         }
     }
 }
