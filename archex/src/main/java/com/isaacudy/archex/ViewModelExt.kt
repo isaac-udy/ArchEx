@@ -7,9 +7,9 @@ import android.arch.lifecycle.ViewModel
 open class LiveViewModel<T : Any>(initialState: T) : ViewModel(), LiveObject<T> {
     private val backing : MutableLive<T> = MutableLive(initialState)
 
-    protected var state : T
+    var state : T
         get() = backing.state
-        set(value) {
+        protected set(value) {
             backing.state = value
         }
 
