@@ -126,7 +126,6 @@ class MutableLiveEvent<T :Any> : LiveEvent<T>() {
 
     fun post(state: T) {
         backing.postValue(state)
-        backing.postValue(null)
     }
 }
 
