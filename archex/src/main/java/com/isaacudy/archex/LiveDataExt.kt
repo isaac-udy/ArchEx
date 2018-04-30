@@ -63,23 +63,14 @@ open class Live<T : Any>(initialState: T) : LiveObject<T> {
 }
 
 class MutableLive<T : Any>(initialState: T) : Live<T>(initialState) {
-    private val handler = Handler(Looper.getMainLooper())
-
     override var state
         get() = backing.value!!
         set(value) {
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                backing.value = value
-            }
-            else {
-                throw RuntimeException()
-            }
+            backing.value = value
         }
 
     fun post(state: T) {
-        handler.post {
-            this.state = state
-        }
+        backing.postValue(state)
     }
 }
 
@@ -128,18 +119,14 @@ open class LiveEvent<T : Any> : LiveObject<T> {
 }
 
 class MutableLiveEvent<T :Any> : LiveEvent<T>() {
-    private val handler = Handler(Looper.getMainLooper())
-
     fun set(state: T){
         backing.value = state
         backing.value = null
     }
 
     fun post(state: T) {
-        handler.post {
-            backing.value = state
-            backing.value = null
-        }
+        backing.postValue(state)
+        backing.postValue(null)
     }
 }
 
