@@ -79,6 +79,9 @@ open class LiveEvent<T : Any> : LiveObject<T> {
 
     private val observeForeverMap = mutableMapOf<LiveObserver<T>, Observer<T>>()
 
+    var lastEvent: T? = null
+        protected set
+
     override fun observe(owner: LifecycleOwner, observer: LiveObserver<T>) {
         backing.observe(owner, createObserver(observer))
     }
@@ -119,13 +122,10 @@ open class LiveEvent<T : Any> : LiveObject<T> {
 }
 
 class MutableLiveEvent<T :Any> : LiveEvent<T>() {
-    fun set(state: T){
+    fun sendEvent(state: T){
         backing.value = state
         backing.value = null
-    }
-
-    fun post(state: T) {
-        backing.postValue(state)
+        lastEvent = state
     }
 }
 
